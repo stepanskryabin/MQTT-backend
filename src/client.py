@@ -5,16 +5,21 @@ Test client
 import paho.mqtt.client as mqtt
 import logging
 import argparse
+import json
+from json import JSONDecodeError
 
 
-class ArgRead:
-    websocket = False
-
-
-parser = argparse.ArgumentParser(description="Test client for MQTT")
-parser.add_argument("--websocket", action='store_true')
-parser.parse_args(args=['--websocket'],
-                  namespace=ArgRead)
+parser = argparse.ArgumentParser(prog="MQTT Client",
+                                 usage="client.py [operator]",
+                                 description="Test client for MQTT",
+                                 epilog="Part of the Apollo core",
+                                 prefix_chars='-',
+                                 add_help=True)
+parser.add_argument("--websocket",
+                    action='store_true',
+                    default=False,
+                    help="Try connect via websocket")
+arguments = parser.parse_args()
 
 logging.basicConfig(filename="client.log",
                     filemode='a',
@@ -23,8 +28,7 @@ logger = logging.getLogger(__name__)
 
 SERVER = "50b39c42c0ce4e079d9694e03cf5b2c6.s1.eu.hivemq.cloud"
 
-
-if ArgRead.websocket:
+if arguments.websocket:
     PORT = 8884
     SOCKET = "websockets"
 else:
@@ -47,10 +51,16 @@ def on_disconnect(_client, userdata, rc, properties=None):
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(_client, userdata, msg):
+    try:
+        payload = json.loads(msg.payload)
+    except JSONDecodeError:
+        payload = msg.payload
+
     print(f"MESSAGE RECIEVED: TOPIC={msg.topic}, ",
-          f"PAYLOAD={str(msg.payload)}, ",
+          f"PAYLOAD={payload}, ",
           f"QOS={msg.qos}, ",
-          f"RETAIN={msg.retain}")
+          f"RETAIN={msg.retain}, "
+          f"USERDATA={userdata}")
     print("===================================")
 
 

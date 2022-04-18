@@ -7,16 +7,12 @@ import paho.mqtt.client as mqtt
 import json
 import argparse
 import logging
-
-
-class ArgRead:
-    websocket = False
+import uuid
 
 
 parser = argparse.ArgumentParser(description="Test publisher for MQTT")
-parser.add_argument("--websocket", action='store_true')
-parser.parse_args(args=['--websocket'],
-                  namespace=ArgRead)
+parser.add_argument("--websocket", action='store_true', default=False)
+arguments = parser.parse_args()
 
 logging.basicConfig(filename="pub.log",
                     filemode='a',
@@ -25,15 +21,15 @@ logger = logging.getLogger(__name__)
 
 SERVER = "50b39c42c0ce4e079d9694e03cf5b2c6.s1.eu.hivemq.cloud"
 
-PTEST = {"uuid": "888",
-         "type": "test",
-         "bool": True,
+PTEST = {"id": str(uuid.uuid1()),
+         "Type": "test",
+         "Name": "teapot",
          "null": None}
 
 AUTH = {"username": "stepan", "password": "1q2w3E4R"}
 TLS = {"tls_version": mqtt.ssl.PROTOCOL_TLS}
 
-if ArgRead.websocket:
+if arguments.websocket:
     PORT = 8884
     SOCKET = "websockets"
 else:
