@@ -1,5 +1,4 @@
 import uuid
-import paho.mqtt.client as mqtt
 
 __version__ = 'v0.1'
 __client_id__ = '123456'
@@ -15,7 +14,6 @@ LOGGER = {'notset': 0,
 SERVER = "50b39c42c0ce4e079d9694e03cf5b2c6.s1.eu.hivemq.cloud"
 AUTH = {"username": "stepan",
         "password": "1q2w3E4R"}
-TLS_PROTOCOL = {"tls": mqtt.ssl.PROTOCOL_TLS}
 
 # Config devices
 ID = uuid.uuid1()

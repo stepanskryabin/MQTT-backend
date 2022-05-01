@@ -8,13 +8,12 @@ import argparse
 import json
 from json import JSONDecodeError
 from main_settings import __client_id__, \
-    __version__, SERVER, AUTH, TLS_PROTOCOL, LOGGER, LOG_FORMAT, DATE_FORMAT
+    __version__, SERVER, AUTH, LOGGER, LOG_FORMAT, DATE_FORMAT
 
 
 def main(connection: bool,
          server: str,
          auth: dict,
-         tls_protocol: dict,
          topic: str,
          qos: str):
     def on_connect(_client, userdata, flags: dict, rc: str, properties=None):
@@ -56,7 +55,7 @@ def main(connection: bool,
     client.enable_logger(logger)
     logger.debug('Enable Paho.MQTT logger')
 
-    client.tls_set(tls_version=tls_protocol['tls'])
+    client.tls_set(tls_version=mqtt.ssl.PROTOCOL_TLS)
     client.username_pw_set(username=auth['username'],
                            password=auth['password'])
 
@@ -65,7 +64,7 @@ def main(connection: bool,
                    keepalive=60,
                    clean_start=mqtt.MQTT_CLEAN_START_FIRST_ONLY)
     logger.debug(f"Connected to server={server}, port:{PORT} via:{SOCKET} "
-                 f"used tls protocol:{tls_protocol['tls']}")
+                 f"used tls protocol:{mqtt.ssl.PROTOCOL_TLS}")
 
     client.on_connect = on_connect
     client.on_message = on_message
@@ -119,6 +118,5 @@ if __name__ == "__main__":
     main(arguments.websocket,
          SERVER,
          AUTH,
-         TLS_PROTOCOL,
          arguments.topic,
          arguments.qos)

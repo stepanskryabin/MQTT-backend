@@ -12,7 +12,7 @@ import paho.mqtt.publish as pub
 import paho.mqtt.client as mqtt
 
 from main_settings import LOGGER, ID, TYPE, NAME, SERVER, AUTH, \
-    TLS_PROTOCOL, __version__, LOG_FORMAT, DATE_FORMAT
+    __version__, LOG_FORMAT, DATE_FORMAT
 
 
 def description(publisher_type: str = 'button',
@@ -41,8 +41,7 @@ def config(raise_time=0.0,
 
 def main(connection: bool,
          server: str,
-         auth: dict,
-         tls: dict):
+         auth: dict):
 
     if connection:
         PORT = 8884
@@ -60,7 +59,7 @@ def main(connection: bool,
                    port=PORT,
                    client_id="",
                    auth=auth,
-                   tls=tls,
+                   tls={"tls_version": mqtt.ssl.PROTOCOL_TLS},
                    protocol=mqtt.MQTTv5,
                    transport=SOCKET)
         pub.single(f"/{ID}/state",
@@ -71,7 +70,7 @@ def main(connection: bool,
                    port=PORT,
                    client_id="",
                    auth=auth,
-                   tls=tls,
+                   tls={"tls_version": mqtt.ssl.PROTOCOL_TLS},
                    protocol=mqtt.MQTTv5,
                    transport=SOCKET)
         pub.single(f"/{ID}/control",
@@ -82,7 +81,7 @@ def main(connection: bool,
                    port=PORT,
                    client_id="",
                    auth=auth,
-                   tls=tls,
+                   tls={"tls_version": mqtt.ssl.PROTOCOL_TLS},
                    protocol=mqtt.MQTTv5,
                    transport=SOCKET)
         pub.single(f"/{ID}/config",
@@ -93,7 +92,7 @@ def main(connection: bool,
                    port=PORT,
                    client_id="",
                    auth=auth,
-                   tls=tls,
+                   tls={"tls_version": mqtt.ssl.PROTOCOL_TLS},
                    protocol=mqtt.MQTTv5,
                    transport=SOCKET)
     except Exception as err:
@@ -140,6 +139,5 @@ if __name__ == "__main__":
     while True:
         main(arguments.websocket,
              SERVER,
-             AUTH,
-             TLS_PROTOCOL)
+             AUTH)
         time.sleep(10)
