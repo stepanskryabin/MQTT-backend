@@ -128,7 +128,8 @@ if __name__ == "__main__":
                                      epilog="<stepan.skrjabin@gmail.com>")
     parser.add_argument("--websocket",
                         action='store_true',
-                        default=False)
+                        default=False,
+                        help="Establish a prioritized protocol is websocket")
     parser.add_argument("--log",
                         nargs=1,
                         choices=['notset',
@@ -138,8 +139,7 @@ if __name__ == "__main__":
                                  'error',
                                  'critical'],
                         default='info',
-                        help="Config level logging. Possible options:"
-                             " notset|debug|info|warning|error|critical")
+                        help="Config level logging.")
     parser.add_argument("--version",
                         action='version',
                         version=__version__)
