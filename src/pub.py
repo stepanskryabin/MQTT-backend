@@ -1,37 +1,18 @@
 """
 Test publisher
 """
+
 import random
 import time
-from typing import List
-
-import paho.mqtt.publish as pub
-import paho.mqtt.client as mqtt
 import json
 import argparse
 import logging
-import uuid
 
-__version__ = 'v0.1'
+import paho.mqtt.publish as pub
+import paho.mqtt.client as mqtt
 
-LOGGER = {'notset': 0,
-          'debug': 10,
-          'info': 20,
-          'warning': 30,
-          'error': 40,
-          'critical': 50}
-
-# Config devices
-ID = uuid.uuid1()
-TYPE = 'channel'
-NAME = 'Канал'
-
-
-# Config MQTT broker
-SERVER = "50b39c42c0ce4e079d9694e03cf5b2c6.s1.eu.hivemq.cloud"
-AUTH = {"username": "stepan",
-        "password": "1q2w3E4R"}
-TLS = {"tls_version": mqtt.ssl.PROTOCOL_TLS}
+from main_settings import LOGGER, ID, TYPE, NAME, SERVER, AUTH, \
+    TLS_PROTOCOL, __version__, LOG_FORMAT, DATE_FORMAT
 
 
 def description(publisher_type: str = 'button',
@@ -123,6 +104,7 @@ def main(connection: bool,
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="MQTTPub",
+                                     usage='pub.py [--key] [value]',
                                      description="Publisher for testing"
                                                  "MQTT connection",
                                      epilog="<stepan.skrjabin@gmail.com>")
@@ -147,6 +129,8 @@ if __name__ == "__main__":
 
     logging.basicConfig(filename="pub.log",
                         filemode='a',
+                        format=LOG_FORMAT,
+                        datefmt=DATE_FORMAT,
                         level=LOGGER[arguments.log])
     logger = logging.getLogger(__name__)
 
@@ -157,5 +141,5 @@ if __name__ == "__main__":
         main(arguments.websocket,
              SERVER,
              AUTH,
-             TLS)
+             TLS_PROTOCOL)
         time.sleep(10)
