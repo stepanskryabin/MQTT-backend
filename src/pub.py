@@ -3,6 +3,7 @@ Test publisher
 """
 import random
 import time
+from typing import List
 
 import paho.mqtt.publish as pub
 import paho.mqtt.client as mqtt
@@ -11,11 +12,14 @@ import argparse
 import logging
 import uuid
 
-logging.basicConfig(filename="pub.log",
-                    filemode='a',
-                    level=logging.NOTSET)
-logger = logging.getLogger(__name__)
-logger.level = 10
+__version__ = 'v0.1'
+
+LOGGER = {'notset': 0,
+          'debug': 10,
+          'info': 20,
+          'warning': 30,
+          'error': 40,
+          'critical': 50}
 
 # Config devices
 ID = uuid.uuid1()
@@ -54,14 +58,12 @@ def config(raise_time=0.0,
             "sacn_pps": sacn_pps}
 
 
-def main(server: str,
+def main(connection: bool,
+         server: str,
          auth: dict,
          tls: dict):
-    parser = argparse.ArgumentParser(description="Test publisher for MQTT")
-    parser.add_argument("--websocket", action='store_true', default=False)
-    arguments = parser.parse_args()
 
-    if arguments.websocket:
+    if connection:
         PORT = 8884
         SOCKET = "websockets"
     else:
@@ -120,7 +122,40 @@ def main(server: str,
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(prog="MQTTPub",
+                                     description="Publisher for testing"
+                                                 "MQTT connection",
+                                     epilog="<stepan.skrjabin@gmail.com>")
+    parser.add_argument("--websocket",
+                        action='store_true',
+                        default=False)
+    parser.add_argument("--log",
+                        nargs=1,
+                        choices=['notset',
+                                 'debug',
+                                 'info',
+                                 'warning',
+                                 'error',
+                                 'critical'],
+                        default='info',
+                        help="Config level logging. Possible options:"
+                             " notset|debug|info|warning|error|critical")
+    parser.add_argument("--version",
+                        action='version',
+                        version=__version__)
+    arguments = parser.parse_args()
+
+    logging.basicConfig(filename="pub.log",
+                        filemode='a',
+                        level=LOGGER[arguments.log])
+    logger = logging.getLogger(__name__)
+
     logger.info("Run publisher")
+    logger.info(f"Run with websockets={arguments.websocket}")
+
     while True:
-        main(SERVER, AUTH, TLS)
+        main(arguments.websocket,
+             SERVER,
+             AUTH,
+             TLS)
         time.sleep(10)
