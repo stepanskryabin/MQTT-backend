@@ -131,3 +131,4 @@ dmypy.json
 # PyCharm staff
 .idea
 /main_db.sqlite
+/config.ini
