@@ -2,6 +2,7 @@ import os
 import stat
 import unittest
 from pathlib import PurePath
+from configparser import MissingSectionHeaderError
 
 from src.app_config import ConfigHandler
 from src.app_config import AccessConfigError
@@ -32,7 +33,9 @@ class TestConfigHandler(unittest.TestCase):
         self.test._set_configparser(name=self.config_name,
                                     directory=None)
         result = self.test._config.sections()
-        self.assertEqual(result[0], "DATABASE")
+        self.assertEqual(result[0], "MQTT")
+        self.assertEqual(result[1], "CORE")
+        self.assertEqual(result[2], "LOG")
 
     def test__str__(self):
         self.assertRegex(str(self.test),
@@ -101,13 +104,12 @@ class TestConfigHandler(unittest.TestCase):
         os.chmod(destination, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
 
     def test_validate(self):
-        valid = self.test._validate()
-        result = valid.dict()
-        self.assertIsInstance(valid, ConfigModel)
-        self.assertEqual(result['size_password'], 32)
-        self.assertTrue(result['uvicorn_logging_disable'])
-        self.assertEqual(result['uri'], 'sqlite:db_sqlite.db')
-        self.assertEqual(result['folder'], 'templates')
+        result = self.test._to_dict()
+        self.assertIsInstance(result, dict)
+        self.assertEqual(result['id'], "1234")
+        self.assertEqual(result['type'], 'channel')
+        self.assertEqual(result['name'], 'Канал')
+        self.assertEqual(result['level'], '0')
 
     def test_rebuild_config(self):
         result = self.test._rebuild_config()
@@ -139,21 +141,26 @@ class TestConfigHandler(unittest.TestCase):
         self.assertEqual(result, self.config_name)
 
     def test_set_config_name(self):
-        result = self.test.config_name = 'setup.cfg'
-        self.assertEqual(result, 'setup.cfg')
+        result = self.test.config_name = 'example_config.ini'
+        self.assertEqual(result, 'example_config.ini')
 
     def test_read(self):
         result = self.test.read()
-        self.assertEqual(result.size_password, 32)
-        self.assertTrue(result.uvicorn_logging_disable)
-        self.assertEqual(result.uri, 'sqlite:db_sqlite.db')
-        self.assertEqual(result.folder, 'templates')
+        self.assertEqual(result.id, "1234")
+        self.assertEqual(result.type, 'channel')
+        self.assertEqual(result.name, 'Канал')
+        self.assertEqual(result.level, '0')
 
     def test_wrong_read(self):
         self.test.root_directory = self.fixtures
-        self.test.config_name = 'wrong_config.ini'
-        self.assertRaises(ValidationError,
-                          self.test.read)
+
+        def result(name):
+            self.test.config_name = name
+            return self.test.config_name
+
+        self.assertRaises(MissingSectionHeaderError,
+                          result,
+                          'wrong_config.ini')
 
     def test_write_without_backup(self):
         self.test.root_directory = self.fixtures

@@ -310,8 +310,10 @@ class ConfigHandler:
                     name: str) -> None:
         """
         Sets of new name for configuration file.
+
         Args:
             name(str): new name for configuration file
+
         Returns:
             None
         """
@@ -330,15 +332,15 @@ class ConfigHandler:
             Config (namedtuple): with key=value
         """
 
-        valid = self._validate().dict()
-        valid_dict = valid.copy()
+        valid = self._to_dict()
+        valid_copy = valid.copy()
         namedtuple_key = []
         while len(valid) > 0:
             key, _ = valid.popitem()
             namedtuple_key.append(key)
 
         Config = namedtuple("Config", namedtuple_key)  # type: ignore
-        return Config(**valid_dict)  # type: ignore
+        return Config(**valid_copy)  # type: ignore
 
     def write(self,
               section: str,
