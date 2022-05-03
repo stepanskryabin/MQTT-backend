@@ -7,8 +7,8 @@ import logging
 import argparse
 import json
 from json import JSONDecodeError
-from main_settings import __client_id__, \
-    __version__, SERVER, AUTH, LOGGER, LOG_FORMAT, DATE_FORMAT
+from main_settings import __client_id__, __version__, SERVER, AUTH, \
+    LOG_FORMAT, DATE_FORMAT
 
 
 def main(connection: bool,
@@ -85,14 +85,10 @@ if __name__ == "__main__":
                         help="Establish a prioritized protocol is websocket")
     parser.add_argument("--log",
                         nargs=1,
-                        choices=['notset',
-                                 'debug',
-                                 'info',
-                                 'warning',
-                                 'error',
-                                 'critical'],
-                        default='notset',
-                        help="Config level logging.")
+                        choices=range(0, 60, 10),
+                        help="config level logging. \n"
+                        "Where 0 - notset, 10 - debug, 20 - info,"
+                        "30 - warning, 40 - error, 50 - critical")
     parser.add_argument("--topic",
                         nargs=1,
                         action='store',
@@ -112,7 +108,7 @@ if __name__ == "__main__":
                         filemode='a',
                         format=LOG_FORMAT,
                         datefmt=DATE_FORMAT,
-                        level=LOGGER[arguments.log])
+                        level=arguments.log[0])
     logger = logging.getLogger(__name__)
 
     main(arguments.websocket,

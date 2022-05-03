@@ -11,8 +11,8 @@ import logging
 import paho.mqtt.publish as pub
 import paho.mqtt.client as mqtt
 
-from main_settings import LOGGER, ID, TYPE, NAME, SERVER, AUTH, \
-    __version__, LOG_FORMAT, DATE_FORMAT
+from main_settings import ID, TYPE, NAME, SERVER, AUTH, __version__, \
+    LOG_FORMAT, DATE_FORMAT
 
 
 def description(publisher_type: str = 'button',
@@ -110,17 +110,13 @@ if __name__ == "__main__":
     parser.add_argument("--websocket",
                         action='store_true',
                         default=False,
-                        help="Establish a prioritized protocol is websocket")
+                        help="establish a prioritized protocol is websocket")
     parser.add_argument("--log",
                         nargs=1,
-                        choices=['notset',
-                                 'debug',
-                                 'info',
-                                 'warning',
-                                 'error',
-                                 'critical'],
-                        default='info',
-                        help="Config level logging.")
+                        choices=range(0, 60, 10),
+                        help="config level logging. \n"
+                        "Where 0 - notset, 10 - debug, 20 - info,"
+                        "30 - warning, 40 - error, 50 - critical")
     parser.add_argument("--version",
                         action='version',
                         version=__version__)
@@ -130,7 +126,7 @@ if __name__ == "__main__":
                         filemode='a',
                         format=LOG_FORMAT,
                         datefmt=DATE_FORMAT,
-                        level=LOGGER[arguments.log])
+                        level=arguments.log[0])
     logger = logging.getLogger(__name__)
 
     logger.info("Run publisher")
