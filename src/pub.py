@@ -83,8 +83,11 @@ def config_dmx(offser=1,
                     "name": name,
                     "pps": pps}}
 
-def config_can(adress):
-    return {"adress": "192.168.0.44"}
+def config_can(adress=None):
+    if adress is None:
+        adress = "192.168.0.44"
+
+    return {"adress": adress}
 
 
 def main(server: str,
