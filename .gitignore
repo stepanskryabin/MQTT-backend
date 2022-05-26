@@ -128,7 +128,10 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# PyCharm staff
+# PyCharm
 .idea
 /main_db.sqlite
 /config.ini
+
+# VSCode
+.vscode/
