@@ -54,6 +54,7 @@ ID1 = gen_ouid(device=2, object=1)
 ID2 = gen_ouid(device=1, object=6)
 ID3 = gen_ouid(device=1, object=7)
 ID4 = gen_ouid(device=0, object=8)
+ID5 = gen_ouid(device=0, object=8)
 
 
 def state_button(event=None):
@@ -109,6 +110,10 @@ def main(server: str,
                      "qos": qos,
                      "retain": retain},
                      {"topic": f"{SUFFIX}/objects/{ID4}/state",
+                     "payload": json.dumps(state_gui(True)),
+                     "qos": qos,
+                     "retain": retain},
+                    {"topic": f"{SUFFIX}/objects/{ID5}/control",
                      "payload": json.dumps(state_gui(True)),
                      "qos": qos,
                      "retain": retain}]
