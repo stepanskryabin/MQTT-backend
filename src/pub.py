@@ -96,7 +96,7 @@ def main(server: str,
 
          qos = 0
          retain = False
-         _message = [{"topic": f"{SUFFIX}/object/{ID1}/state",
+         _message = [{"topic": f"{SUFFIX}/objects/{ID1}/state",
                      "payload": json.dumps(state_button("press")),
                      "qos": qos,
                      "retain": retain},
@@ -108,7 +108,7 @@ def main(server: str,
                      "payload": json.dumps(config_can()),
                      "qos": qos,
                      "retain": retain},
-                     {"topic": f"{SUFFIX}/object/{ID4}/state",
+                     {"topic": f"{SUFFIX}/objects/{ID4}/state",
                      "payload": json.dumps(state_gui(True)),
                      "qos": qos,
                      "retain": retain}]
